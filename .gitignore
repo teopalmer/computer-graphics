@@ -1,0 +1,10 @@
+*.exe
+*.out
+*.o
+*.pch
+*.gch
+.DS_Store
+CMakeLists.txt
+.idea/
+*/venv/
+*/__pycache__/
