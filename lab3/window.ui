@@ -19,7 +19,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Отрезки</string>
+   <string>Построение Отрезков</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGraphicsView" name="mainview">
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>60</y>
+      <y>50</y>
       <width>221</width>
       <height>21</height>
      </rect>
@@ -65,7 +65,7 @@
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>120</y>
+      <y>140</y>
       <width>231</width>
       <height>20</height>
      </rect>
@@ -86,7 +86,7 @@
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>90</y>
+      <y>110</y>
       <width>201</width>
       <height>20</height>
      </rect>
@@ -107,7 +107,7 @@
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>150</y>
+      <y>170</y>
       <width>271</width>
       <height>20</height>
      </rect>
@@ -128,7 +128,7 @@
     <property name="geometry">
      <rect>
       <x>540</x>
-      <y>30</y>
+      <y>20</y>
       <width>261</width>
       <height>20</height>
      </rect>
@@ -658,6 +658,27 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="br_int_2">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>80</y>
+      <width>201</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Times New Roman</family>
+      <pointsize>18</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Библиотечный</string>
     </property>
    </widget>
   </widget>

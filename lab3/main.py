@@ -11,7 +11,7 @@
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QPen, QPainter, QColor, QBrush, QImage, QPixmap, QRgba64
 from PyQt5.QtCore import Qt
-from math import cos, sin, pi, radians, copysign, fabs
+from math import cos, sin, pi, radians, copysign, fabs, trunc
 import numpy as np
 import time
 
@@ -39,12 +39,9 @@ def sign(x):
         return x/abs(x)
 
 
-def line_DDA(win, p1, p2):
-    # Длина и высота линии
-    deltaX = abs(p1[0] - p2[0])
-    deltaY = abs(p1[1] - p2[1])
+def line_CDA(win, p1, p2):
 
-    length = max(deltaX, deltaY)
+    length = max(abs(p1[0] - p2[0]), abs(p1[1] - p2[1]))
 
     if length == 0:
         win.image.setPixel(p1[0], p1[1], win.pen.color().rgb())
@@ -76,33 +73,30 @@ def line_br_float(win, p1, p2):
     dy = abs(dy)
     x = p1[0]
     y = p1[1]
-
-    change = False
-
+    ch = 0
     if dy > dx:
         dx, dy = dy, dx
-        change = True
-
+        ch = 1
     h = dy / dx
-
     e = h - 0.5
     i = 1
+
     while i <= dx:
         win.image.setPixel(x, y, win.pen.color().rgb())
         if e >= 0:
-            if change is False:
+            if not ch:
                 y += sy
             else:
                 x += sx
             e -= 1
 
         if e < 0:
-            if change is False:
+            if not ch:
                 x += sx
             else:
                 y += sy
             e += h
-        i+=1
+        i += 1
 
 
 def line_br_int(win, p1, p2):
@@ -117,28 +111,26 @@ def line_br_int(win, p1, p2):
     dy = abs(dy)
     x = p1[0]
     y = p1[1]
-
-    change = False
-
+    ch = 0
     if dy > dx:
         temp = dx
         dx = dy
         dy = temp
-        change = True
+        ch = 1
 
     e = 2 * dy - dx
     i = 1
     while i <= dx:
         win.image.setPixel(x, y, win.pen.color().rgb())
         if e >= 0:
-            if change == 0:
+            if ch == 0:
                 y += sy
             else:
                 x += sx
             e -= 2 * dx
 
         if e < 0:
-            if change == 0:
+            if ch == 0:
                 x += sx
             else:
                 y += sy
@@ -150,7 +142,6 @@ def line_br_smooth(win, p1, p2):
     if p1 == p2:
         win.image.setPixel(p1[0], p1[1], win.pen.color().rgb())
         return
-
     win.pen.setColor(win.color_line)
     dx = p2[0] - p1[0]
     dy = p2[1] - p1[1]
@@ -166,8 +157,7 @@ def line_br_smooth(win, p1, p2):
     except ZeroDivisionError:
         h = 0
 
-
-    isBlack = False
+    isBlack = 0
 
     if win.pen.color() == Qt.black:
         i_max = 256
@@ -175,11 +165,11 @@ def line_br_smooth(win, p1, p2):
     else:
         i_max = 100
 
-    change = False
+    change = 0
 
     if dy > dx:
         dx, dy = dy, dx
-        change = True
+        change = 1
         if h:
             h = 1 / h
 
@@ -211,97 +201,62 @@ def line_br_smooth(win, p1, p2):
         i += 1
 
 
+
 def line_draw_Wu(win, p1, p2):
+    color = win.pen.color()
+
     if p1 == p2:
         win.image.setPixel(p1[0], p1[1], win.pen.color().rgb())
         return
 
-    xb = p1[0]
-    yb = p1[1]
-    xe = p2[0]
-    ye = p2[1]
-    dx = p2[0] - p1[0]
-    dy = p2[1] - p1[1]
+    x1 = p1[0]
+    y1 = p1[1]
+    x2 = p2[0]
+    y2 = p2[1]
+    dx = x2 - x1
+    dy = y2 - y1
+    max_i = 255
+    m = sys.maxsize
 
-    isBlack = False
-    if win.pen.color() == Qt.black:
-        i_max = 256
-        isBlack = True
+    if abs(dy) > abs(dx):
+        if y1 > y2:
+            x1, x2 = x2, x1
+            y1, y2 = y2, y1
+        if dy != 0:
+            m = dx / dy
+        y1 = round(y1)
+        y2 = round(y2)
+        x = x1
+        y = y1
+        while y < y2 + 1:
+            d1 = x - trunc(x)
+            d2 = 1 - d1
+            color.setAlpha(int(max_i * d2))
+            win.image.setPixel(trunc(x), y, color.rgba())
+            color.setAlpha(int(max_i * d1))
+            win.image.setPixel(trunc(x) + 1, y, color.rgba())
+            x += m
+            y += 1
     else:
-        i_max = 100
+        if x1 > x2:
+            x1, x2 = x2, x1
+            y1, y2 = y2, y1
+        if dx != 0:
+            m = dy / dx
+        x1 = round(x1)
+        x2 = round(x2)
+        x = x1
+        y = y1
+        while x < x2 + 1:
+            d1 = y - trunc(y)
+            d2 = 1 - d1
 
-    change = abs(dx) < abs(dy)
-
-    if change:
-        xb, yb, xe, ye, dx, dy = yb, xb, ye, xe, dy, dx
-
-    if xe < xb:
-        xb, xe, yb, ye = xe, xb, ye, yb
-
-    grad = 0
-    if dy != 0:
-        grad = dy / dx
-
-    y = yb
-    x = xb
-
-    while x <= xe:
-        if change:
-            s = sign(y)
-            if not isBlack:
-                new = win.pen.color()
-                new.lighter(100  + i_max * (fabs(y - int(y))))
-                win.pen.setColor(new)
-                win.image.setPixel(y, x, win.pen.color().rgba())
-            else:
-                new = QColor()
-                new.setRgb(0, 0, 0, alpha=i_max - i_max * (fabs(y - int(y))))
-                win.pen.setColor(new)
-                win.image.setPixel(y, x, win.pen.color().rgba())
-
-            if dy and dx:
-                if not isBlack:
-                    new = win.pen.color()
-                    new.lighter(100 + i_max - i_max * (fabs(y - int(y))))
-                    win.pen.setColor(new)
-                    win.image.setPixel(y, x, win.pen.color().rgba())
-                else:
-                    new = QColor()
-                    new.setRgb(0, 0, 0, alpha=i_max * (fabs(y - int(y))))
-                    win.pen.setColor(new)
-                    win.image.setPixel(y, x, win.pen.color().rgba())
-            win.image.setPixel(y+s, x, win.pen.color().rgba())
-
-        else:
-            s = sign(y)
-            if not isBlack:
-                new = win.pen.color()
-                new.lighter(100 + i_max * (fabs(y - int(y))))
-                win.pen.setColor(new)
-                win.image.setPixel(x, y, win.pen.color().rgba())
-            else:
-                new = QColor()
-                new.setRgb(0, 0, 0, alpha=i_max - i_max * (fabs(y - int(y))))
-                win.pen.setColor(new)
-                win.image.setPixel(x, y, win.pen.color().rgba())
-
-            if dy and dx:
-                if not isBlack:
-                    new = win.pen.color()
-                    new.lighter(100 + i_max - i_max * (fabs(y - int(y))))
-                    win.pen.setColor(new)
-                    win.image.setPixel(x, y, win.pen.color().rgba())
-                else:
-                    new = QColor()
-                    new.setRgb(0, 0, 0, alpha=i_max * (fabs(y - int(y))))
-                    win.pen.setColor(new)
-                    win.image.setPixel(x, y, win.pen.color().rgba())
-            win.image.setPixel(x, y + s, win.pen.color().rgba())
-        y += grad
-
-        x += 1
-
-
+            color.setAlpha(int(max_i * d2))  # Интенсивность
+            win.image.setPixel(x, trunc(y), color.rgba())
+            color.setAlpha(int(max_i * d1))
+            win.image.setPixel(x, trunc(y) + 1, color.rgba())
+            y += m
+            x += 1
 
 
 def draw_line(win):
@@ -309,11 +264,11 @@ def draw_line(win):
     by = win.begin_y.value()
     ex = win.end_x.value()
     ey = win.end_y.value()
-    is_standart =False
+    is_standart = False
     win.image.fill(win.color_bground)
     if win.cda.isChecked():
         start = time.clock()
-        line_DDA(win, [bx, by], [ex, ey])
+        line_CDA(win, [bx, by], [ex, ey])
         end = time.clock()
     if win.br_float.isChecked():
         start = time.clock()
@@ -328,9 +283,10 @@ def draw_line(win):
         line_br_smooth(win, [bx, by], [ex, ey])
         end = time.clock()
     if win.lib.isChecked():
-        is_standart = True
+        #is_standart = True
         start = time.clock()
-        win.scene.addLine(bx, by, ex, ey, win.pen)
+        line_draw_Wu(win, [bx, by], [ex, ey])
+        #win.scene.addLine(bx, by, ex, ey, win.pen)
         end = time.clock()
 
     if not is_standart:
@@ -346,7 +302,7 @@ def draw_beam(win):
     spin = win.spin_angle.value()
     bx = 255
     by = 255
-    win.image.fill(win.color_bground)
+    #win.image.fill(win.color_bground)
     is_standart = False
     for i in np.arange(0, 360, spin):
         ex = cos(radians(i)) * d + 255
@@ -354,7 +310,7 @@ def draw_beam(win):
 
         if win.cda.isChecked():
             start = time.clock()
-            line_DDA(win, [bx, by], [ex, ey])
+            line_CDA(win, [bx, by], [ex, ey])
             end = time.clock()
         if win.br_float.isChecked():
             start = time.clock()
@@ -369,9 +325,10 @@ def draw_beam(win):
             line_br_smooth(win, [bx, by], [ex, ey])
             end = time.clock()
         if win.lib.isChecked():
-            is_standart = True
+            #is_standart = True
             start = time.clock()
-            win.scene.addLine(bx, by, ex, ey, win.pen)
+            line_draw_Wu(win, [bx, by], [ex, ey])
+            #win.scene.addLine(bx, by, ex, ey, win.pen)
             end = time.clock()
 
     if not is_standart:
@@ -379,7 +336,7 @@ def draw_beam(win):
         pix.convertFromImage(win.image)
         win.scene.addPixmap(pix)
 
-    win.label.setText("{0:.3f}msc".format((end - start) * 1000))
+    print("{0:.3f}msc".format((end - start) * 1000))
 
 
 def get_color_bground(win):
