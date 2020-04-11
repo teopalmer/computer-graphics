@@ -14,7 +14,7 @@
    <string>Построение эллипсов</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGraphicsView" name="graphicsView">
+   <widget class="QGraphicsView" name="canvas">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -28,14 +28,15 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>20</y>
-      <width>221</width>
-      <height>20</height>
+      <y>79</y>
+      <width>251</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Courier New</family>
+      <pointsize>16</pointsize>
      </font>
     </property>
     <property name="text">
@@ -46,14 +47,15 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>40</y>
-      <width>221</width>
-      <height>20</height>
+      <y>99</y>
+      <width>271</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Courier New</family>
+      <pointsize>16</pointsize>
      </font>
     </property>
     <property name="text">
@@ -64,50 +66,53 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>60</y>
+      <y>19</y>
       <width>221</width>
-      <height>20</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Courier New</family>
+      <pointsize>16</pointsize>
      </font>
     </property>
     <property name="text">
-     <string>Алгоритм Брезенхема</string>
+     <string>Брезенхем</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="middleButton">
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>80</y>
-      <width>221</width>
-      <height>20</height>
+      <y>39</y>
+      <width>241</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Courier New</family>
+      <pointsize>16</pointsize>
      </font>
     </property>
     <property name="text">
-     <string>Алгоритм средней точки</string>
+     <string>Средняя точка</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="libraryButton">
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>100</y>
+      <y>59</y>
       <width>221</width>
-      <height>20</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Courier New</family>
+      <pointsize>16</pointsize>
      </font>
     </property>
     <property name="text">
@@ -132,7 +137,7 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QLabel" name="CoordLabelR">
     <property name="geometry">
      <rect>
       <x>590</x>
@@ -144,13 +149,14 @@
     <property name="font">
      <font>
       <family>Courier New</family>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="text">
      <string>Координаты центра</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox">
+   <widget class="QSpinBox" name="RXspinBox">
     <property name="geometry">
      <rect>
       <x>740</x>
@@ -159,8 +165,13 @@
       <height>21</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox_2">
+   <widget class="QSpinBox" name="RYspinBox">
     <property name="geometry">
      <rect>
       <x>800</x>
@@ -169,8 +180,13 @@
       <height>21</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
    </widget>
-   <widget class="QLabel" name="label_2">
+   <widget class="QLabel" name="RadiusLabelR">
     <property name="geometry">
      <rect>
       <x>590</x>
@@ -182,13 +198,14 @@
     <property name="font">
      <font>
       <family>Courier New</family>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="text">
      <string>Радиус</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox_4">
+   <widget class="QSpinBox" name="RRspinBox">
     <property name="geometry">
      <rect>
       <x>740</x>
@@ -197,19 +214,24 @@
       <height>21</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
    </widget>
-   <widget class="QPushButton" name="btn_line">
+   <widget class="QPushButton" name="lineColorButton">
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>460</y>
+      <y>440</y>
       <width>221</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Times New Roman</family>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -219,18 +241,18 @@
      <string>Выбрать цвет линии</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btn_bground">
+   <widget class="QPushButton" name="bgColorButton">
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>420</y>
+      <y>400</y>
       <width>221</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Times New Roman</family>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -244,14 +266,14 @@
     <property name="geometry">
      <rect>
       <x>810</x>
-      <y>430</y>
+      <y>410</y>
       <width>41</width>
       <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Times New Roman</family>
+      <family>Courier New</family>
       <pointsize>14</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -262,14 +284,14 @@
     <property name="geometry">
      <rect>
       <x>810</x>
-      <y>470</y>
+      <y>450</y>
       <width>41</width>
       <height>20</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Times New Roman</family>
+      <family>Courier New</family>
       <pointsize>14</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -324,7 +346,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Times New Roman</family>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -334,18 +356,18 @@
      <string>Очистить холст</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btn_bground_2">
+   <widget class="QPushButton" name="roundButton">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>590</x>
       <y>210</y>
-      <width>221</width>
+      <width>261</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Times New Roman</family>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -355,18 +377,116 @@
      <string>Отобразить окружность</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btn_bground_3">
+   <widget class="QSpinBox" name="EYspinBox">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>350</y>
-      <width>221</width>
+      <x>800</x>
+      <y>270</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLabel" name="CoordLabelE">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>270</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Координаты центра</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="HalfsLabelE">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>300</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Полуоси</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="EXspinBox">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>270</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="EHXspinBox">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>300</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="EHYspinBox">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>300</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ellipseButton">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>330</y>
+      <width>261</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Times New Roman</family>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
       <weight>50</weight>
       <bold>false</bold>
@@ -376,23 +496,13 @@
      <string>Отобразить эллипс</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox_3">
+   <widget class="Line" name="line_2">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>270</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>590</x>
-      <y>270</y>
-      <width>141</width>
-      <height>21</height>
+      <x>580</x>
+      <y>370</y>
+      <width>291</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="font">
@@ -400,17 +510,17 @@
       <family>Courier New</family>
      </font>
     </property>
-    <property name="text">
-     <string>Координаты центра</string>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
+   <widget class="Line" name="line_3">
     <property name="geometry">
      <rect>
-      <x>590</x>
-      <y>300</y>
-      <width>141</width>
-      <height>21</height>
+      <x>580</x>
+      <y>250</y>
+      <width>291</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="font">
@@ -418,38 +528,26 @@
       <family>Courier New</family>
      </font>
     </property>
-    <property name="text">
-     <string>Полуоси</string>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox_6">
+   <widget class="Line" name="line_4">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>270</y>
-      <width>51</width>
-      <height>21</height>
+      <x>580</x>
+      <y>490</y>
+      <width>291</width>
+      <height>20</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBox_7">
-    <property name="geometry">
-     <rect>
-      <x>740</x>
-      <y>300</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
     </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBox_5">
-    <property name="geometry">
-     <rect>
-      <x>800</x>
-      <y>300</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
   </widget>
