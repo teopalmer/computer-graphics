@@ -10,6 +10,7 @@ from PyQt5.QtCore import Qt
 from math import cos, sin, pi, radians, copysign, fabs, trunc
 import numpy as np
 import time
+from algs import *
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
@@ -50,6 +51,24 @@ def get_color_line(win):
 def clear_all(win):
     win.image.fill(Qt.color0)
     win.scene.clear()
+
+def process(win, x, y, rx, ry):
+    if win.brezButton.isChecked():
+        draw_brez(win, x, y, rx, ry)
+    if win.middleButton.ischecked():
+        draw_middle(win, x, y, rx, ry)
+    if win.middleButton.ischecked():
+        draw_middle(win, x, y, rx, ry)
+
+def draw_circle(win):
+    x = win.RXSpinBox.value()
+    y = win.RYSpinBox.value()
+    rx = win.RRSpinBox.value()
+    ry = win.RRSpinBox.value()
+    win.image.fill(win.color_bground)
+    start = time.clock()
+
+    end = time.clock()
 
 if __name__ == "__main__":
     import sys
