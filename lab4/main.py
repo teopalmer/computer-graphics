@@ -10,7 +10,7 @@ from PyQt5.QtCore import Qt
 from math import cos, sin, pi, radians, copysign, fabs, trunc
 import numpy as np
 import time
-from algs import *
+import algs as al
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
@@ -24,7 +24,9 @@ class Window(QtWidgets.QMainWindow):
         self.color_bground = QColor(Qt.white)
         self.clean_all.clicked.connect(lambda : clear_all(self))
         self.bgColorButton.clicked.connect(lambda: get_color_bground(self))
-        self.lineColorButton.clicked.connect(lambda: get_color_bground(self))
+        self.lineColorButton.clicked.connect(lambda: get_color_line(self))
+        self.roundButton.clicked.connect(lambda: draw_circle(self))
+        self.ellipseButton.clicked.connect(lambda: draw_ellipse(self))
 
 def get_color_bground(win):
     color = QtWidgets.QColorDialog.getColor(initial=Qt.white, title='Цвет фона',
@@ -52,22 +54,46 @@ def clear_all(win):
     win.image.fill(Qt.color0)
     win.scene.clear()
 
-def process(win, x, y, rx, ry):
-    if win.brezButton.isChecked():
-        draw_brez(win, x, y, rx, ry)
-    if win.middleButton.ischecked():
-        draw_middle(win, x, y, rx, ry)
-    if win.middleButton.ischecked():
-        draw_middle(win, x, y, rx, ry)
-
 def draw_circle(win):
-    x = win.RXSpinBox.value()
-    y = win.RYSpinBox.value()
-    rx = win.RRSpinBox.value()
-    ry = win.RRSpinBox.value()
-    win.image.fill(win.color_bground)
-    start = time.clock()
+    win.image.setPixel(255, 255, 255)
+    x = win.RXspinBox.value()
+    y = win.RYspinBox.value()
+    r = win.RRspinBox.value()
 
+    win.image.fill(win.color_bground)
+
+    start = time.clock()
+    if win.canonButton.isChecked():
+        al.circle_canon(win, x, y, r)
+    if win.paramButton.isChecked():
+        al.circle_param(win, x, y, r)
+    if win.brezButton.isChecked():
+        al.circle_brez(win, x, y, r)
+    if win.middleButton.isChecked():
+        al.circle_middle(win, x, y, r)
+    if win.libraryButton.isChecked():
+        win.scene.addEllipse(x - r, y - r, r * 2, r * 2, win.pen)
+    end = time.clock()
+
+def draw_ellipse(win):
+    x = win.EXspinBox.value()
+    y = win.EYspinBox.value()
+    a = win.EHXspinBox.value()
+    b = win.EHYspinBox.value()
+
+    win.image.fill(win.color_bground)
+
+    start = time.clock()
+    if win.canonButton.isChecked():
+        al.draw_canon(win, x, y, b, a)
+    if win.paramButton.isChecked():
+        al.draw_param(win, x, y, b, a)
+    if win.brezButton.isChecked():
+        al.draw_brez(win, x, y, b, a)
+    if win.middleButton.isChecked():
+        al.draw_middle(win, x, y, b, a)
+    if win.libraryButton.isChecked():
+        win.scene.addEllipse(x - b, y - a, b * 2, a * 2, win.pen)
     end = time.clock()
 
 if __name__ == "__main__":
@@ -76,3 +102,4 @@ if __name__ == "__main__":
     w = Window()
     w.show()
     sys.exit(app.exec_())
+

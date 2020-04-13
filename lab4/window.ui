@@ -170,6 +170,12 @@
       <family>Courier New</family>
      </font>
     </property>
+    <property name="maximum">
+     <number>560</number>
+    </property>
+    <property name="value">
+     <number>255</number>
+    </property>
    </widget>
    <widget class="QSpinBox" name="RYspinBox">
     <property name="geometry">
@@ -184,6 +190,12 @@
      <font>
       <family>Courier New</family>
      </font>
+    </property>
+    <property name="minimum">
+     <number>255</number>
+    </property>
+    <property name="maximum">
+     <number>560</number>
     </property>
    </widget>
    <widget class="QLabel" name="RadiusLabelR">
@@ -391,6 +403,12 @@
       <family>Courier New</family>
      </font>
     </property>
+    <property name="maximum">
+     <number>560</number>
+    </property>
+    <property name="value">
+     <number>255</number>
+    </property>
    </widget>
    <widget class="QLabel" name="CoordLabelE">
     <property name="geometry">
@@ -443,6 +461,12 @@
      <font>
       <family>Courier New</family>
      </font>
+    </property>
+    <property name="maximum">
+     <number>560</number>
+    </property>
+    <property name="value">
+     <number>255</number>
     </property>
    </widget>
    <widget class="QSpinBox" name="EHXspinBox">
