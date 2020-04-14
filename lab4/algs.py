@@ -55,28 +55,38 @@ def draw_brez(win, cx, cy, a, b):
 def draw_middle(win, cx, cy, a, b):
     x = 0
     y = b
-    d = b * b - a * a * b + 0.25 * a * a
-    while 2 * (b ** 2) * x < 2 * a * a * y:
+    a2 = a * a
+    b2 = b * b
+    ad = 2 * a2
+    bd = 2 * b2
+
+    mid = a2 / sqrt(a2 + b2)
+    f = b2 - a2 * b + 0.25 * a2
+    dx = 0
+    dy = -ad * y
+    while x <= mid:
         plotellipse(win, cx, x, cy, y)
 
-        x += 1
-        if d < 0:
-            d += 2 * b * b * x + b * b
-        else:
+        if f > 0:
             y -= 1
-            d += 2 * b * b * x - 2 * a * a * y + b * b
+            dy += ad
+            f += dy
+        x += 1
+        dx += bd
+        f += dx + b2
 
-    d = b * b * (x + 0.5) * (x + 0.5) + a * a * (y - 1) * (y - 1) - a * a * b * b
+    f += -b2 * (x + 0.75) - a2 * (y - 0.75)
 
     while y >= 0:
         plotellipse(win, cx, x, cy, y)
 
-        y -= 1
-        if d > 0:
-            d -= 2 * a * a * y + a * a
-        else:
+        if f <= 0:
             x += 1
-            d += 2 * b * b * x - 2 * a * a * y + a * a
+            dx += bd
+            f += dx
+        y -= 1
+        dy += ad
+        f += a2 + dy
 
 
 def draw_canon(win, cx, cy, a, b):
