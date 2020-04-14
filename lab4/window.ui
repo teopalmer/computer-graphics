@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>883</width>
-    <height>600</height>
+    <width>882</width>
+    <height>609</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -123,7 +123,7 @@
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>130</y>
+      <y>180</y>
       <width>291</width>
       <height>20</height>
      </rect>
@@ -141,7 +141,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>150</y>
+      <y>200</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -160,7 +160,7 @@
     <property name="geometry">
      <rect>
       <x>740</x>
-      <y>150</y>
+      <y>200</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -181,7 +181,7 @@
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>150</y>
+      <y>200</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -202,7 +202,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>180</y>
+      <y>230</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -221,7 +221,7 @@
     <property name="geometry">
      <rect>
       <x>740</x>
-      <y>180</y>
+      <y>230</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -231,12 +231,18 @@
       <family>Courier New</family>
      </font>
     </property>
+    <property name="maximum">
+     <number>500</number>
+    </property>
+    <property name="value">
+     <number>50</number>
+    </property>
    </widget>
    <widget class="QPushButton" name="lineColorButton">
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>440</y>
+      <y>490</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -257,7 +263,7 @@
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>400</y>
+      <y>450</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -278,7 +284,7 @@
     <property name="geometry">
      <rect>
       <x>810</x>
-      <y>410</y>
+      <y>460</y>
       <width>41</width>
       <height>20</height>
      </rect>
@@ -296,7 +302,7 @@
     <property name="geometry">
      <rect>
       <x>810</x>
-      <y>450</y>
+      <y>500</y>
       <width>41</width>
       <height>20</height>
      </rect>
@@ -314,7 +320,7 @@
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>520</y>
+      <y>530</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -372,7 +378,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>210</y>
+      <y>260</y>
       <width>261</width>
       <height>41</height>
      </rect>
@@ -393,7 +399,7 @@
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>270</y>
+      <y>340</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -414,7 +420,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>270</y>
+      <y>340</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -433,7 +439,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>300</y>
+      <y>370</y>
       <width>141</width>
       <height>21</height>
      </rect>
@@ -452,7 +458,7 @@
     <property name="geometry">
      <rect>
       <x>740</x>
-      <y>270</y>
+      <y>340</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -473,7 +479,7 @@
     <property name="geometry">
      <rect>
       <x>740</x>
-      <y>300</y>
+      <y>370</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -482,13 +488,19 @@
      <font>
       <family>Courier New</family>
      </font>
+    </property>
+    <property name="maximum">
+     <number>500</number>
+    </property>
+    <property name="value">
+     <number>50</number>
     </property>
    </widget>
    <widget class="QSpinBox" name="EHYspinBox">
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>300</y>
+      <y>370</y>
       <width>51</width>
       <height>21</height>
      </rect>
@@ -498,12 +510,18 @@
       <family>Courier New</family>
      </font>
     </property>
+    <property name="maximum">
+     <number>500</number>
+    </property>
+    <property name="value">
+     <number>100</number>
+    </property>
    </widget>
    <widget class="QPushButton" name="ellipseButton">
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>330</y>
+      <y>400</y>
       <width>261</width>
       <height>41</height>
      </rect>
@@ -524,7 +542,7 @@
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>370</y>
+      <y>440</y>
       <width>291</width>
       <height>20</height>
      </rect>
@@ -542,7 +560,7 @@
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>250</y>
+      <y>310</y>
       <width>291</width>
       <height>20</height>
      </rect>
@@ -560,7 +578,7 @@
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>490</y>
+      <y>120</y>
       <width>291</width>
       <height>20</height>
      </rect>
@@ -572,6 +590,86 @@
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="RadiusLabelR_2">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>140</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Количество</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="CountBox">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>140</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
+    <property name="maximum">
+     <number>500</number>
+    </property>
+    <property name="value">
+     <number>5</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="RadiusLabelR_3">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>160</y>
+      <width>141</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Шаг</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="StepBox">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>160</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Courier New</family>
+     </font>
+    </property>
+    <property name="maximum">
+     <number>500</number>
+    </property>
+    <property name="value">
+     <number>15</number>
     </property>
    </widget>
   </widget>

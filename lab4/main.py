@@ -55,46 +55,77 @@ def clear_all(win):
     win.scene.clear()
 
 def draw_circle(win):
-    win.image.setPixel(255, 255, 255)
+
+    count = win.CountBox.value()
+    step = win.StepBox.value()
+
     x = win.RXspinBox.value()
     y = win.RYspinBox.value()
     r = win.RRspinBox.value()
 
-    win.image.fill(win.color_bground)
+    #win.image.fill(win.color_bground)
 
     start = time.clock()
-    if win.canonButton.isChecked():
-        al.circle_canon(win, x, y, r)
-    if win.paramButton.isChecked():
-        al.circle_param(win, x, y, r)
-    if win.brezButton.isChecked():
-        al.circle_brez(win, x, y, r)
-    if win.middleButton.isChecked():
-        al.circle_middle(win, x, y, r)
-    if win.libraryButton.isChecked():
-        win.scene.addEllipse(x - r, y - r, r * 2, r * 2, win.pen)
+    for i in range(count):
+
+        if win.canonButton.isChecked():
+            al.circle_canon(win, x, y, r)
+        if win.paramButton.isChecked():
+            al.circle_param(win, x, y, r)
+        if win.brezButton.isChecked():
+            al.circle_brez(win, x, y, r)
+        if win.middleButton.isChecked():
+            al.circle_middle(win, x, y, r)
+        if win.libraryButton.isChecked():
+            win.scene.addEllipse(x - r, y - r, r * 2, r * 2, win.pen)
+        r += step
+
     end = time.clock()
 
+    print(end - start)
+
+    if not win.libraryButton.isChecked():
+        pix = QPixmap(511, 511)
+        pix.convertFromImage(win.image)
+        win.scene.addPixmap(pix)
+
 def draw_ellipse(win):
+
+    count = win.CountBox.value()
+    step = win.StepBox.value()
+
     x = win.EXspinBox.value()
     y = win.EYspinBox.value()
     a = win.EHXspinBox.value()
     b = win.EHYspinBox.value()
 
-    win.image.fill(win.color_bground)
+    #win.image.fill(win.color_bground)
 
     start = time.clock()
-    if win.canonButton.isChecked():
-        al.draw_canon(win, x, y, b, a)
-    if win.paramButton.isChecked():
-        al.draw_param(win, x, y, b, a)
-    if win.brezButton.isChecked():
-        al.draw_brez(win, x, y, b, a)
-    if win.middleButton.isChecked():
-        al.draw_middle(win, x, y, b, a)
-    if win.libraryButton.isChecked():
-        win.scene.addEllipse(x - b, y - a, b * 2, a * 2, win.pen)
-    end = time.clock()
+
+    for i in range(count):
+        if win.canonButton.isChecked():
+            al.draw_canon(win, x, y, b, a)
+        if win.paramButton.isChecked():
+            al.draw_param(win, x, y, b, a)
+        if win.brezButton.isChecked():
+            al.draw_brez(win, x, y, b, a)
+        if win.middleButton.isChecked():
+            al.draw_middle(win, x, y, b, a)
+        if win.libraryButton.isChecked():
+            win.scene.addEllipse(x - b, y - a, b * 2, a * 2, win.pen)
+
+        a += step
+        b += step
+    end  = time.clock()
+
+    print(end - start)
+
+
+    if not win.libraryButton.isChecked():
+        pix = QPixmap(511, 511)
+        pix.convertFromImage(win.image)
+        win.scene.addPixmap(pix)
 
 if __name__ == "__main__":
     import sys
