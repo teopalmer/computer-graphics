@@ -115,9 +115,9 @@ def draw_ellipse(win):
         if win.libraryButton.isChecked():
             win.scene.addEllipse(x - b, y - a, b * 2, a * 2, win.pen)
 
-        a += step
-        b += step
-    end  = time.clock()
+        a *= 2
+        b *= 2
+    end = time.clock()
 
     print(end - start)
 
