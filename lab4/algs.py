@@ -56,21 +56,15 @@ def draw_middle(win, cx, cy, a, b):
     x = 0
     y = b
     d = b * b - a * a * b + 0.25 * a * a
-    dx = 2 * (b ** 2) * x
-    dy = 2 * a * a * y
-    bx = 2 * b * b * x
-    b2 = b * b
-    ax = 2 * a * a * y
-    a2 = a * a
-    while dx < dy:
+    while 2 * (b ** 2) * x < 2 * a * a * y:
         plotellipse(win, cx, x, cy, y)
 
         x += 1
         if d < 0:
-            d += bx + b2
+            d += 2 * b * b * x + b * b
         else:
             y -= 1
-            d += bx - ax + b2
+            d += 2 * b * b * x - 2 * a * a * y + b * b
 
     d = b * b * (x + 0.5) * (x + 0.5) + a * a * (y - 1) * (y - 1) - a * a * b * b
 
@@ -79,10 +73,10 @@ def draw_middle(win, cx, cy, a, b):
 
         y -= 1
         if d > 0:
-            d -= ax + a2
+            d -= 2 * a * a * y + a * a
         else:
             x += 1
-            d += bx - ax + a2
+            d += 2 * b * b * x - 2 * a * a * y + a * a
 
 
 def draw_canon(win, cx, cy, a, b):
