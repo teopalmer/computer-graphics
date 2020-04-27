@@ -2,12 +2,11 @@ from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QPen, QColor, QImage, QPixmap, QPainter
 from PyQt5.QtCore import Qt, QTime, QCoreApplication, QEventLoop, QPoint
-import time
+import sys
 global w
 
 pen_color = Qt.black
 bg_color = Qt.white
-
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
@@ -23,6 +22,7 @@ class Window(QtWidgets.QMainWindow):
         self.erase.clicked.connect(lambda: clean_all(self))
         self.paint.clicked.connect(lambda: fill_polygon(self))
         self.addpoint.clicked.connect(lambda: add_point_by_btn(self))
+
         self.edges = []
         self.point_now = None
         self.point_start = None
@@ -43,7 +43,7 @@ def add_row(win):
 
 
 def add_point(point):
-    if w.point_start is None:
+    if not w.point_now:
         w.point_start = point
     else:
         w.edges.append([w.point_now.x(), w.point_now.y(),
@@ -52,8 +52,8 @@ def add_point(point):
                         point.x(), point.y(), w.pen)
 
     w.point_now = point
+    i = w.table.rowCount()
     add_row(w)
-    i = w.table.rowCount() - 1
     x = QTableWidgetItem("{0}".format(point.x()))
     y = QTableWidgetItem("{0}".format(point.y()))
     w.table.setItem(i, 0, x)
@@ -71,15 +71,16 @@ def lock(win):
 
 
 def clean_all(win):
+    r = win.table.rowCount()
+    for i in range(r, -1, -1):
+        win.table.removeRow(i)
+
     win.scene.clear()
-    win.table.clear()
+    win.table.clearContents()
     win.edges = []
     win.point_now = None
     win.point_start = None
     win.image.fill(bg_color)
-    r = win.table.rowCount()
-    for i in range(r, -1, -1):
-        win.table.removeRow(i)
 
 
 def draw_edges(image, edges):
@@ -147,6 +148,7 @@ def fill_polygon(win):
             if win.delay.isChecked():
                 delay(win, pix)
 
+        pix.convertFromImage(win.image)
         win.scene.addPixmap(pix)
         p.end()
     draw_edges(win.image, win.edges)
@@ -162,8 +164,6 @@ def add_point_by_btn(win):
 
 
 if __name__ == "__main__":
-    import sys
-
     app = QtWidgets.QApplication(sys.argv)
     w = Window()
     w.show()
