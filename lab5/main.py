@@ -5,8 +5,8 @@ from PyQt5.QtCore import Qt, QTime, QCoreApplication, QEventLoop, QPoint
 import time
 global w
 
-col_one = Qt.black
-col_zero = Qt.white
+pen_color = Qt.black
+bg_color = Qt.white
 
 
 class Window(QtWidgets.QMainWindow):
@@ -18,7 +18,7 @@ class Window(QtWidgets.QMainWindow):
         self.view.setScene(self.scene)
         self.image = QImage(561, 581, QImage.Format_ARGB32_Premultiplied)
         
-        self.image.fill(col_zero)
+        self.image.fill(bg_color)
         self.lock.clicked.connect(lambda: lock(self))
         self.erase.clicked.connect(lambda: clean_all(self))
         self.paint.clicked.connect(lambda: fill_polygon(self))
@@ -26,7 +26,7 @@ class Window(QtWidgets.QMainWindow):
         self.edges = []
         self.point_now = None
         self.point_start = None
-        self.pen = QPen(col_one)
+        self.pen = QPen(pen_color)
         self.delay.setChecked(False)
 
 
@@ -44,34 +44,30 @@ def add_row(win):
 
 def add_point(point):
     if w.point_start is None:
-        w.point_now = point
         w.point_start = point
-        add_row(w)
-        i = w.table.rowCount() - 1
-        item_x = QTableWidgetItem("{0}".format(point.x()))
-        item_y = QTableWidgetItem("{0}".format(point.y()))
-        w.table.setItem(i, 0, item_x)
-        w.table.setItem(i, 1, item_y)
     else:
         w.edges.append([w.point_now.x(), w.point_now.y(),
                         point.x(), point.y()])
-        w.point_now = point
-        add_row(w)
-        i = w.table.rowCount() - 1
-        item_x = QTableWidgetItem("{0}".format(point.x()))
-        item_y = QTableWidgetItem("{0}".format(point.y()))
-        w.table.setItem(i, 0, item_x)
-        w.table.setItem(i, 1, item_y)
-        item_x = w.table.item(i - 1, 0)
-        item_y = w.table.item(i - 1, 1)
-        w.scene.addLine(point.x(), point.y(), float(item_x.text()), float(item_y.text()), w.pen)
+        w.scene.addLine(w.point_now.x(), w.point_now.y(),
+                        point.x(), point.y(), w.pen)
+
+    w.point_now = point
+    add_row(w)
+    i = w.table.rowCount() - 1
+    x = QTableWidgetItem("{0}".format(point.x()))
+    y = QTableWidgetItem("{0}".format(point.y()))
+    w.table.setItem(i, 0, x)
+    w.table.setItem(i, 1, y)
 
 
 def lock(win):
-    win.edges.append([win.point_now.x(), win.point_now.y(), win.point_start.x(), win.point_start.y()])
-    win.scene.addLine(win.point_now.x(), win.point_now.y(), win.point_start.x(), win.point_start.y(), w.pen)
+    x1, y1 = win.point_now.x(), win.point_now.y()
+    x2, y2 = win.point_start.x(), win.point_start.y()
+
+    win.edges.append([x1, y1, x2, y2])
+    win.scene.addLine(x1, y1, x2, y2, w.pen)
+
     win.point_now = None
-    # print(win.edges)
 
 
 def clean_all(win):
@@ -80,7 +76,7 @@ def clean_all(win):
     win.edges = []
     win.point_now = None
     win.point_start = None
-    win.image.fill(col_zero)
+    win.image.fill(bg_color)
     r = win.table.rowCount()
     for i in range(r, -1, -1):
         win.table.removeRow(i)
@@ -89,86 +85,78 @@ def clean_all(win):
 def draw_edges(image, edges):
     p = QPainter()
     p.begin(image)
-    p.setPen(QPen(col_one))
+    p.setPen(QPen(pen_color))
     for ed in edges:
         p.drawLine(ed[0], ed[1], ed[2], ed[3])
     p.end()
 
 
-def delay():
-
+def delay(win, pix):
     QtWidgets.QApplication.processEvents(QEventLoop.AllEvents, 1)
+    pix.convertFromImage(win.image)
+    win.scene.addPixmap(pix)
 
 
-def find_max_y(ed):
-    x_max = None
-    for i in range(len(ed)):
-        if x_max is None or ed[i][0] > x_max:
-            x_max = ed[i][0]
+def find_max_x(edges):
+    xm = None
+    
+    for i in range(len(edges)):
+        if not xm or edges[i][0] > xm:
+            xm = edges[i][0]
 
-        if x_max is None or ed[i][2] > x_max:
-            x_max = ed[i][2]
+        if not xm or edges[i][2] > xm:
+            xm = edges[i][2]
 
-    return x_max
+    return xm
 
 
 def fill_polygon(win):
     pix = QPixmap()
     p = QPainter()
+    xm = int(find_max_x(win.edges))
 
-    xm = int(find_max_y(win.edges))
     for ed in win.edges:
+        x1, y1 = ed[0], ed[1]
+        x2, y2 = ed[2], ed[3]
         p.begin(win.image)
-        # если горизонтальное ребро - дальше
-        if ed[1] == ed[3]:
+
+        if y1 == y2:
             continue
-        # иначе определяем границы сканирования
-        if ed[1] > ed[3]:
-            ed[1], ed[3] = ed[3], ed[1]
 
-            ed[0], ed[2] = ed[2], ed[0]
+        if y1 > y2:
+            y1, y2 = y2, y1
+            x1, x2 = x2, x1
 
-        y = ed[1]
-        end_y = ed[3]
-        dx = (ed[2] - ed[0]) / (ed[3] - ed[1])
-        start_x = ed[0]
+        cur_y = y1
+        end_y = y2
+        dx = (x2 - x1) / (y2 - y1)
+        start_x = x1
 
-        while y < end_y:
-            # определяем пересечение
-
+        while cur_y < end_y:
             x = start_x
             while x < xm:
-                col = QColor(win.image.pixel(x, y))
-                if col == col_zero:
-                    p.setPen(QPen(col_one))
+                if QColor(win.image.pixel(x, cur_y)) == bg_color:
+                    p.setPen(QPen(pen_color))
                 else:
-                    p.setPen(QPen(col_zero))
-                p.drawPoint(x, y)
+                    p.setPen(QPen(bg_color))
+                p.drawPoint(x, cur_y)
                 x += 1
 
             start_x += dx
-            y += 1
-
+            cur_y += 1
             if win.delay.isChecked():
-                delay()
-                pix.convertFromImage(win.image)
-                win.scene.addPixmap(pix)
+                delay(win, pix)
 
-        if not win.delay.isChecked():
-            pix.convertFromImage(win.image)
-            win.scene.addPixmap(pix)
+        win.scene.addPixmap(pix)
         p.end()
     draw_edges(win.image, win.edges)
 
 
 def add_point_by_btn(win):
-    x = win.x.value()
-    y = win.y.value()
-
     p = QPoint()
 
-    p.setX(x)
-    p.setY(y)
+    p.setX(win.x.value())
+    p.setY(win.y.value())
 
     add_point(p)
 
