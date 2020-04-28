@@ -5,8 +5,9 @@ from PyQt5.QtCore import Qt, QTime, QCoreApplication, QEventLoop, QPoint
 import sys
 global w
 
-pen_color = Qt.black
-bg_color = Qt.white
+global pen_color
+global bg_color
+
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
@@ -16,7 +17,8 @@ class Window(QtWidgets.QMainWindow):
         self.scene.win = self
         self.view.setScene(self.scene)
         self.image = QImage(561, 581, QImage.Format_ARGB32_Premultiplied)
-        
+        self.bgColorButton.clicked.connect(lambda: get_color_bground(self))
+
         self.image.fill(bg_color)
         self.lock.clicked.connect(lambda: lock(self))
         self.erase.clicked.connect(lambda: clean_all(self))
@@ -36,6 +38,18 @@ class myScene(QtWidgets.QGraphicsScene):
             add_point(event.scenePos())
         else:
             lock(w)
+
+
+def get_color_bground(win):
+    global pen_color
+    color = QtWidgets.QColorDialog.getColor(initial=Qt.black, title='Цвет фона',
+                                            options=QtWidgets.QColorDialog.DontUseNativeDialog)
+    if color.isValid():
+        win.color_bground = color
+        s = QtWidgets.QGraphicsScene(0, 0, 10, 10)
+        s.setBackgroundBrush(color)
+        win.bground_color.setScene(s)
+        pen_color = color
 
 
 def add_row(win):
@@ -111,9 +125,17 @@ def find_max_x(edges):
     return xm
 
 
+def displaytime(win, time):
+    #win.time_label.setText("y".format(time*1000))
+    win.time_label.setText("Время: {0:.3f}msc".format(time))
+    return
+
 def fill_polygon(win):
+    t = QTime()
     pix = QPixmap()
     p = QPainter()
+
+    t.start()
     xm = int(find_max_x(win.edges))
 
     for ed in win.edges:
@@ -150,7 +172,8 @@ def fill_polygon(win):
 
         pix.convertFromImage(win.image)
         win.scene.addPixmap(pix)
-        p.end()
+    p.end()
+    displaytime(win, t.elapsed())
     draw_edges(win.image, win.edges)
 
 
@@ -164,6 +187,9 @@ def add_point_by_btn(win):
 
 
 if __name__ == "__main__":
+    pen_color = Qt.black
+    bg_color = Qt.white
+
     app = QtWidgets.QApplication(sys.argv)
     w = Window()
     w.show()
