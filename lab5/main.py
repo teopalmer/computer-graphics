@@ -8,7 +8,6 @@ global w
 global pen_color
 global bg_color
 
-
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
@@ -85,8 +84,8 @@ def lock(win):
 
 
 def clean_all(win):
-    r = win.table.rowCount()
-    for i in range(r, -1, -1):
+    l = win.table.rowCount()
+    for i in range(l, -1, -1):
         win.table.removeRow(i)
 
     win.scene.clear()
@@ -101,8 +100,8 @@ def draw_edges(image, edges):
     p = QPainter()
     p.begin(image)
     p.setPen(QPen(pen_color))
-    for ed in edges:
-        p.drawLine(ed[0], ed[1], ed[2], ed[3])
+    for e in edges:
+        p.drawLine(e[0], e[1], e[2], e[3])
     p.end()
 
 
@@ -126,9 +125,16 @@ def find_max_x(edges):
 
 
 def displaytime(win, time):
-    #win.time_label.setText("y".format(time*1000))
     win.time_label.setText("Время: {0:.3f}msc".format(time))
     return
+
+
+def activate_pixel(win, p, x, cur_y):
+    if QColor(win.image.pixel(x, cur_y)) == bg_color:
+        p.setPen(QPen(pen_color))
+    else:
+        p.setPen(QPen(bg_color))
+
 
 def fill_polygon(win):
     t = QTime()
@@ -137,11 +143,11 @@ def fill_polygon(win):
 
     t.start()
     xm = int(find_max_x(win.edges))
+    p.begin(win.image)
 
     for ed in win.edges:
         x1, y1 = ed[0], ed[1]
         x2, y2 = ed[2], ed[3]
-        p.begin(win.image)
 
         if y1 == y2:
             continue
@@ -158,10 +164,7 @@ def fill_polygon(win):
         while cur_y < end_y:
             x = start_x
             while x < xm:
-                if QColor(win.image.pixel(x, cur_y)) == bg_color:
-                    p.setPen(QPen(pen_color))
-                else:
-                    p.setPen(QPen(bg_color))
+                activate_pixel(win, p, x, cur_y)
                 p.drawPoint(x, cur_y)
                 x += 1
 
