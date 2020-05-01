@@ -175,6 +175,7 @@ def fill_polygon(win):
 
         pix.convertFromImage(win.image)
         win.scene.addPixmap(pix)
+
     p.end()
     displaytime(win, t.elapsed())
     draw_edges(win.image, win.edges)
