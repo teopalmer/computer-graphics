@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QPen, QColor, QImage, QPixmap, QPainter
-from PyQt5.QtCore import Qt, QTime, QCoreApplication, QEventLoop, QPoint
+from PyQt5.QtCore import Qt, QTime, QCoreApplication, QEventLoop, QPointF, QPoint
 import sys
 global w
 
@@ -165,48 +165,56 @@ def activate_pixel(win, p, x, cur_y):
 
 
 def fill_polygon(win):
-    t = QTime()
+
     pix = QPixmap()
-    p = QPainter()
 
-    t.start()
-    xm = int(find_max_x(win.edges))
-    p.begin(win.image)
+    paint = QPainter()
+    paint.begin(win.image)
 
-    for ed in win.edges:
-        x1, y1 = ed[0], ed[1]
-        x2, y2 = ed[2], ed[3]
+    stack = []
 
-        if y1 == y2:
-            continue
+    edge = QColor(0, 0, 255).rgb()
+    fill = pen_color
 
-        if y1 > y2:
-            y1, y2 = y2, y1
-            x1, x2 = x2, x1
+    z = QPointF(win.p_x.value(), win.p_y.value())
+    stack.append(z)
 
-        cur_y = y1
-        end_y = y2
-        dx = (x2 - x1) / (y2 - y1)
-        start_x = x1
+    while stack:
+        p = stack.pop()
+        x = p.x()
+        y = p.y()
+        # tx = x, запоминаем абсицссу
+        xt = p.x()
 
-        while cur_y < end_y:
-            x = start_x
-            while x < xm:
-                activate_pixel(win, p, x, cur_y)
-                p.drawPoint(x, cur_y)
-                x += 1
+        win.image.setPixel(x, y, fill)
+        x = x - 1
+        while win.image.pixel(x, y) != edge:
+            win.image.setPixel(x, y, fill)
+            x = x - 1
 
-            start_x += dx
-            cur_y += 1
-            if win.delay.isChecked():
-                delay(win, pix)
+        # сохраняем крайний слева пиксел
+        xl = x + 1
+        x = xt
+        # заполняем интервал справа от затравки
+        x = x + 1
 
+        while win.image.pixel(x, y) != edge:
+            win.image.setPixel(x, y, fill)
+            x = x + 1
+
+        xr = x - 1
+        y = y + 1
+        x = xl
+
+
+        if win.delay.isChecked():
+            delay()
+            pix.convertFromImage(win.image)
+            win.scene.addPixmap(pix)
+
+    if not win.delay.isChecked():
         pix.convertFromImage(win.image)
         win.scene.addPixmap(pix)
-
-    p.end()
-    displaytime(win, t.elapsed())
-    draw_edges(win.image, win.edges)
 
 
 def add_point_by_btn(win):
