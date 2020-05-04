@@ -82,6 +82,34 @@ def lock(win):
 
     win.point_now = None
 
+def draw_circle(image, rad, point):
+    p = QPainter()
+    p.begin(image)
+    p.setPen(QPen(QColor(0, 0, 255)))
+    p.drawEllipse(point.x() - rad, point.y() - rad, rad * 2, rad * 2)
+    p.end()
+
+def get_pixel(point):
+    global w, point_zat, circle
+    pix = QPixmap()
+    if circle:
+        r = w.rad.value()
+        draw_circle(w.image, r, point)
+        circle = False
+    if point_zat:
+        w.p_x.setValue(point.x())
+        w.p_y.setValue(point.y())
+        draw_edges(w.image, w.edges)
+        point_zat = False
+    pix.convertFromImage(w.image)
+    w.scene.addPixmap(pix)
+    w.lock.setDisabled(False)
+    w.erase.setDisabled(False)
+    w.paint.setDisabled(False)
+    w.addpoint.setDisabled(False)
+    w.addcircle.setDisabled(False)
+    w.pixel.setDisabled(False)
+
 
 def clean_all(win):
     l = win.table.rowCount()
