@@ -223,7 +223,7 @@ def seed_alg(window):
             cur_pix_color = window.image.pixel(x, y)
 
             while cur_pix_color != seed_color and cur_pix_color != border_color and x <= x_right:
-                if flag == False:
+                if not flag:
                     flag = True
                 x += 1
                 cur_pix_color = window.image.pixel(x, y)
@@ -359,7 +359,7 @@ def draw_frame(window):
     draw_image_from_pix(window)
 
 
-if __name__ == "__main__":
+def main():
     global window
 
     app = QtWidgets.QApplication(sys.argv)
@@ -368,3 +368,6 @@ if __name__ == "__main__":
 
     sys.exit(app.exec_())
 
+
+if __name__ == "__main__":
+    main()
