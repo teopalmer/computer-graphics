@@ -5,18 +5,18 @@ from PyQt5.QtGui import QPen, QColor, QImage, QPixmap
 from PyQt5.QtWidgets import QMessageBox
 import sys
 
-max_size_x = 1150
-max_size_y = 900
+size_x = 1150
+size_y = 900
 
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
         uic.loadUi("window.ui", self)
-        self.scene = Scene(0, 0, max_size_x, max_size_y)
+        self.scene = Scene(0, 0, size_x, size_y)
         self.canvas.setScene(self.scene)
 
-        self.image = QImage(max_size_x, max_size_y, QImage.Format_ARGB32_Premultiplied)
+        self.image = QImage(size_x, size_y, QImage.Format_ARGB32_Premultiplied)
         self.image.fill(Qt.white)
         self.pen = QPen(Qt.black)
 
@@ -35,17 +35,17 @@ class Window(QtWidgets.QMainWindow):
 
         self.bg_color = QColor(Qt.white)
         self.border_color = QColor(Qt.black)
-        self.seed_color = QColor(Qt.red)
+        self.seed_color = QColor(229, 204, 255)
         self.first_color_buttons()
 
         draw_frame(self)
 
     def first_color_buttons(self):
-        self.color_bg_bt.setStyleSheet("background-color:rgb" \
+        self.color_bg_bt.setStyleSheet("background-color:rgb"
                                        + color_in_str(self.bg_color.getRgb()))
-        self.color_seed_bt.setStyleSheet("background-color:rgb" \
+        self.color_seed_bt.setStyleSheet("background-color:rgb"
                                          + color_in_str(self.seed_color.getRgb()))
-        self.color_border_bt.setStyleSheet("background-color:rgb" \
+        self.color_border_bt.setStyleSheet("background-color:rgb"
                                            + color_in_str(self.border_color.getRgb()))
 
 
@@ -85,7 +85,7 @@ def fill_polygon_m():
 def add_point(point):
     global window
 
-    if point.x() < 0 or point.y() < 0 or point.x() > max_size_x - 1 or point.y() > max_size_y - 1:
+    if point.x() < 0 or point.y() < 0 or point.x() > size_x - 1 or point.y() > size_y - 1:
         return
 
     if window.seed_pix_button_clicked:
@@ -141,6 +141,7 @@ def add_sb_point(window):
 
 def close_polygon():
     global window
+    color = QPen(window.border_color).color().rgba()
 
     size = len(window.cur_polygon)
     if size > 2:
@@ -148,7 +149,7 @@ def close_polygon():
             window.cur_polygon[size - 1].y(),
             window.cur_polygon[0].x(),
             window.cur_polygon[0].y(),
-            QPen(window.border_color).color().rgba())
+            color)
 
         draw_image_from_pix(window)
         window.cur_polygon = list()
@@ -181,8 +182,10 @@ def fill_part(x, y, x_right, seed_color, border_color, stack):
 
 
 def fill_polygon(window):
-    p_s = QPointF(window.x_z_sb.value(), window.y_z_sb.value())
-    if not check_pixel(p_s):
+
+    stack = list()
+    seed = QPointF(window.x_z_sb.value(), window.y_z_sb.value())
+    if not check_pixel(seed):
         QMessageBox.warning(window, "Ошибка", "Затравочный пиксель находится вне рамки или на ней")
         return
 
@@ -190,8 +193,7 @@ def fill_polygon(window):
     seed_color = window.seed_color.rgb()
     need_delay = window.delay.checkState()
 
-    stack = list()
-    stack.append(p_s)
+    stack.append(seed)
 
     while stack:
         pixel = stack.pop()
@@ -234,7 +236,7 @@ def fill_polygon(window):
 
 
 def draw_image_from_pix(window):
-    pixel = QPixmap(max_size_x, max_size_y)
+    pixel = QPixmap(size_x, size_y)
     pixel.convertFromImage(window.image)
     window.scene.addPixmap(pixel)
 
@@ -287,7 +289,7 @@ def delay():
 
 
 def check_pixel(point):
-    return not (point.x() <= 0 or point.y() <= 0 or point.x() >= max_size_x or point.y() >= max_size_y)
+    return not (point.x() <= 0 or point.y() <= 0 or point.x() >= size_x or point.y() >= size_y)
 
 
 def get_bg_color(window):
@@ -298,7 +300,7 @@ def get_bg_color(window):
             return
 
         window.bg_color = color
-        window.color_bg_bt.setStyleSheet("background-color:rgb" \
+        window.color_bg_bt.setStyleSheet("background-color:rgb"
                                          + color_in_str(window.bg_color.getRgb()))
         fill_bg(window)
 
@@ -307,7 +309,7 @@ def get_seed_color(window):
     color = QtWidgets.QColorDialog.getColor()
     if color.isValid():
         window.seed_color = color
-        window.color_seed_bt.setStyleSheet("background-color:rgb" \
+        window.color_seed_bt.setStyleSheet("background-color:rgb"
                                            + color_in_str(window.seed_color.getRgb()))
 
 
@@ -319,7 +321,7 @@ def get_border_color(window):
             return
 
         window.border_color = color
-        window.color_border_bt.setStyleSheet("background-color:rgb" \
+        window.color_border_bt.setStyleSheet("background-color:rgb"
                                              + color_in_str(window.border_color.getRgb()))
         draw_frame(window)
 
@@ -332,10 +334,12 @@ def fill_bg(window):
 
 
 def draw_frame(window):
-    cda(window, 0, 0, max_size_x, 0, QPen(window.border_color).color().rgba())
-    cda(window, 0, 0, 0, max_size_y - 1, QPen(window.border_color).color().rgba())
-    cda(window, max_size_x - 1, 0, max_size_x - 1, max_size_y - 1, QPen(window.border_color).color().rgba())
-    cda(window, 0, max_size_y - 1, max_size_x, max_size_y - 1, QPen(window.border_color).color().rgba())
+    color = QPen(window.border_color).color().rgba()
+
+    cda(window, 0, 0, size_x, 0, color)
+    cda(window, 0, 0, 0, size_y - 1, color)
+    cda(window, size_x - 1, 0, size_x - 1, size_y - 1, color)
+    cda(window, 0, size_y - 1, size_x, size_y - 1, color)
 
     window.scene.clear()
     draw_image_from_pix(window)
