@@ -24,7 +24,7 @@ class Window(QtWidgets.QMainWindow):
         self.add_point_bt.clicked.connect(lambda: add_sb_point(self))
         self.clear_bt.clicked.connect(lambda: clear(self))
         self.add_seed_pix_bt.clicked.connect(lambda: get_seed_pix(self))
-        self.fill_bt.clicked.connect(lambda: seed_alg(self))
+        self.fill_bt.clicked.connect(lambda: fill_polygon(self))
 
         self.color_bg_bt.clicked.connect(lambda: get_bg_color(self))
         self.color_seed_bt.clicked.connect(lambda: get_seed_color(self))
@@ -58,7 +58,7 @@ class Scene(QtWidgets.QGraphicsScene):
         elif event.buttons() == Qt.RightButton:
             close_polygon()
         else:
-            seed_alg_m()
+            fill_polygon_m()
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton and event.modifiers() == Qt.ShiftModifier:
@@ -77,9 +77,9 @@ def get_seed_pix(window):
     window.seed_pix_button_clicked = True
 
 
-def seed_alg_m():
+def fill_polygon_m():
     global window
-    seed_alg(window)
+    fill_polygon(window)
 
 
 def add_point(point):
@@ -154,7 +154,33 @@ def close_polygon():
         window.cur_polygon = list()
 
 
-def seed_alg(window):
+def fill_part(x, y, x_right, seed_color, border_color, stack):
+    while x <= x_right:
+        flag = False
+        cur_pix_color = window.image.pixel(x, y)
+
+        while cur_pix_color != seed_color and cur_pix_color != border_color and x <= x_right:
+            if not flag:
+                flag = True
+            x += 1
+            cur_pix_color = window.image.pixel(x, y)
+
+        if flag:
+            if x == x_right and cur_pix_color != border_color and cur_pix_color != seed_color:
+                stack.append(QPointF(x, y))
+            else:
+                stack.append(QPointF(x - 1, y))
+
+        x_last = x
+        while (cur_pix_color == border_color or cur_pix_color == seed_color) and x < x_right:
+            x += 1
+            cur_pix_color = window.image.pixel(x, y)
+
+        if x == x_last:
+            x = x + 1
+
+
+def fill_polygon(window):
     p_s = QPointF(window.x_z_sb.value(), window.y_z_sb.value())
     if not check_pixel(p_s):
         QMessageBox.warning(window, "Ошибка", "Затравочный пиксель находится вне рамки или на ней")
@@ -168,10 +194,10 @@ def seed_alg(window):
     stack.append(p_s)
 
     while stack:
-        pix = stack.pop()
-        x = pix.x()
-        y = pix.y()
-        center_x = x
+        pixel = stack.pop()
+        x = pixel.x()
+        y = pixel.y()
+        temp_x = x
         window.image.setPixel(x, y, seed_color)
 
         x += 1
@@ -180,7 +206,7 @@ def seed_alg(window):
             x += 1
 
         x_right = x - 1
-        x = center_x
+        x = temp_x
 
         x -= 1
         while window.image.pixel(x, y) != border_color:
@@ -191,56 +217,12 @@ def seed_alg(window):
         y += 1
         x = x_left
 
-        while x <= x_right:
-            flag = False
-            cur_pix_color = window.image.pixel(x, y)
-
-            while cur_pix_color != seed_color and cur_pix_color != border_color and x <= x_right:
-                if not flag:
-                    flag = True
-                x += 1
-                cur_pix_color = window.image.pixel(x, y)
-
-            if flag:
-                if x == x_right and cur_pix_color != border_color and cur_pix_color != seed_color:
-                    stack.append(QPointF(x, y))
-                else:
-                    stack.append(QPointF(x - 1, y))
-
-            x_last = x
-            while (cur_pix_color == border_color or cur_pix_color == seed_color) and x < x_right:
-                x += 1
-                cur_pix_color = window.image.pixel(x, y)
-
-            if x == x_last:
-                break
+        fill_part(x, y, x_right, seed_color, border_color, stack)
 
         y -= 2
         x = x_left
 
-        while x <= x_right:
-            flag = False
-            cur_pix_color = window.image.pixel(x, y)
-
-            while cur_pix_color != seed_color and cur_pix_color != border_color and x <= x_right:
-                if not flag:
-                    flag = True
-                x += 1
-                cur_pix_color = window.image.pixel(x, y)
-
-            if flag:
-                if x == x_right and cur_pix_color != border_color and cur_pix_color != seed_color:
-                    stack.append(QPointF(x, y))
-                else:
-                    stack.append(QPointF(x - 1, y))
-
-            x_last = x
-            while (cur_pix_color == border_color or cur_pix_color == seed_color) and x < x_right:
-                x += 1
-                cur_pix_color = window.image.pixel(x, y)
-
-            if x == x_last:
-                break
+        fill_part(x, y, x_right, seed_color, border_color, stack)
 
         if need_delay:
             delay()
@@ -252,9 +234,9 @@ def seed_alg(window):
 
 
 def draw_image_from_pix(window):
-    pix = QPixmap(max_size_x, max_size_y)
-    pix.convertFromImage(window.image)
-    window.scene.addPixmap(pix)
+    pixel = QPixmap(max_size_x, max_size_y)
+    pixel.convertFromImage(window.image)
+    window.scene.addPixmap(pixel)
 
 
 def clear(window):
