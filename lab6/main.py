@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt, QPointF, QEventLoop
 from PyQt5.QtGui import QPen, QColor, QImage, QPixmap
 from PyQt5.QtWidgets import QMessageBox
 import sys
+import time
 
 size_x = 1150
 size_y = 900
@@ -193,6 +194,8 @@ def fill_polygon(window):
     seed_color = window.seed_color.rgb()
     need_delay = window.delay.checkState()
 
+    st = time.clock()
+
     stack.append(seed)
 
     while stack:
@@ -216,23 +219,22 @@ def fill_polygon(window):
             x -= 1
 
         x_left = x + 1
-        y += 1
-        x = x_left
 
-        fill_part(x, y, x_right, seed_color, border_color, stack)
+        fill_part(x_left, y + 1, x_right, seed_color, border_color, stack)
 
-        y -= 2
-        x = x_left
-
-        fill_part(x, y, x_right, seed_color, border_color, stack)
+        fill_part(x_left, y - 1, x_right, seed_color, border_color, stack)
 
         if need_delay:
             delay()
             window.scene.clear()
             draw_image_from_pix(window)
 
+    t = time.clock() - st
+
     window.scene.clear()
     draw_image_from_pix(window)
+
+    QMessageBox.information(window, "Время выполнения", str(t) + " msc")
 
 
 def draw_image_from_pix(window):
